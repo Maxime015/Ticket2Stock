@@ -1,0 +1,58 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  backend-tests:
+    name: Backend · tests du parseur
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      # Les runners de tests n'ont besoin que de requests + python-dotenv
+      # (pas de Flask/EasyOCR/torch), on garde donc l'install minimale et rapide.
+      - name: Install minimal deps
+        run: pip install requests python-dotenv
+
+      - name: Parser tests
+        run: python tests/run_parser_tests.py
+
+      - name: Gemini normalization tests
+        run: python tests/run_gemini_tests.py
+
+  mobile-checks:
+    name: Mobile · typecheck & lint
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: mobile
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+          cache-dependency-path: mobile/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: TypeScript
+        run: npx tsc --noEmit
+
+      - name: ESLint
+        run: npx expo lint

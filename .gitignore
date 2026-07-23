@@ -1,0 +1,32 @@
+# --- OS ---
+.DS_Store
+*.DS_Store
+Thumbs.db
+
+# --- Secrets & env ---
+.env
+.env.*
+!.env.example
+
+# --- Python (backend) ---
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+env/
+.pytest_cache/
+
+# --- Node / Expo (mobile) ---
+node_modules/
+.expo/
+dist/
+web-build/
+*.log
+npm-debug.*
+yarn-error.*
+
+# --- Éditeurs ---
+.idea/
+.vscode/
+*.swp
